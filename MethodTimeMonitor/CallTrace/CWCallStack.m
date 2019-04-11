@@ -189,12 +189,42 @@ int callStackAddressOfThread(thread_t thread, uintptr_t* callstackBuffer)
         NSLog(@"Fail get thread: %d\n", thread);
     }
     
-    // 指向处理器下条等待执行的指令地址(代码段内的偏移量) ?
+    /* 调用栈结构
+        ------------------       <--| high address
+        pc/rip 指令寄存器             |   |
+        lr                          |   |
+        sp                          |   |
+        fp                          |   |
+        main argument argc          |   main stack frame
+        main argument argc          |   |
+        local variable i = 10       |   |
+        j = 5                       |   |
+        func2                       |   |
+  fp->  ------------------    <--|  |   |
+        pc                       |  |   |
+        lr                       |  |   |
+        sp    -------------------|  |   func2 stack frame
+        fp    ----------------------|   |
+        func2 parameter1:               |
+        func2 parameter2:               V
+  sp->  ----------------------         low address
+
+     */
+    
+    /*
+     while(fp)
+     {
+        pc = *(fp+1);
+        fp = *fp;
+     }
+     */
+    
+    // 指令寄存器 指向处理器下条等待执行的指令地址，每次执行完相应的汇编指令eip的值就会增加，因此此处地址是当前执行指令的地址
     const uintptr_t instructionAddress = cwGetInstructionAddress(&machineContext);
     callstackBuffer[i] = instructionAddress;
     i++;
     
-    //  当前函数返回地址
+    //  当前函数返回地址 lr寄存器存储当前函数返回地址
     const uintptr_t linkRegisterAddress = cwMachThreadGetLinkRegisterPointerByCPU(&machineContext);
     
     if (linkRegisterAddress)
@@ -210,8 +240,9 @@ int callStackAddressOfThread(thread_t thread, uintptr_t* callstackBuffer)
     
     StackFrame frame = {0};
     
+    // 获取当前fp地址
     const uintptr_t framePointer = cwGetFramePointerAddress(&machineContext);
-    
+    //
     if (framePointer == 0 || cwMachCopyMem((void *)framePointer, &frame, sizeof(frame)) != KERN_SUCCESS)
     {
         return 0;
@@ -342,6 +373,10 @@ void cw_symbolicate(const uintptr_t *const backtraceBuffer,
                     Dl_info *symbolBuffer,
                     const int stackLen, const int skippedEntries)
 {
+    //获取每条指令的地址，所有的地址存在于callstackBuffer数组中，其中第0个元素存储当前执行指令的地址即指令寄存器pc/eip所存储的地址，
+    //第1个元素存储的是当前函数的返回地址即父函数调用本函数地址，也就是lr寄存器存储的值，以后元素存储的是framePointer 的地址。
+    //如果获取每条指令的地址，除了第0个元素外，instructionAddr = callstackBuffer[i] - 1;
+    
     int i = 0;
     if (!skippedEntries && i < stackLen)
     {
@@ -350,7 +385,10 @@ void cw_symbolicate(const uintptr_t *const backtraceBuffer,
     
     for (; i < stackLen; i++) {
         
-        cwDladdr(cwInstructionAddressByCPU(backtraceBuffer[i]), &symbolBuffer[i]);
+        // 获取指令地址 相当于 address - 1 不同架构cpu获取这个值得方式不同
+        uintptr_t instructionAddr = cwInstructionAddressByCPU(backtraceBuffer[i]);
+        
+        cwDladdr(instructionAddr, &symbolBuffer[i]);
     }
     
 }
@@ -573,7 +611,7 @@ BOOL fillThreadStateIntoMachineState(thread_act_t thread, _STRUCT_MCONTEXT *mach
 
 
 
-// 获取指令寄存器地址 在x86处理器中，EIP(Instruction Pointer)是指令寄存器，指向处理器下条等待执行的指令地址(代码段内的偏移量)，
+// 获取指令寄存器地址 当前执行指令的地址
 uintptr_t cwGetInstructionAddress(mcontext_t const machineContext)
 {
 #if defined(__arm64__)
