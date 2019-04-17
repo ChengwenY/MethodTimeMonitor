@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E872A73E2266FBA10067D95E /* AppMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E872A73D2266FBA10067D95E /* AppMonitor.m */; };
 		E8DFB543225B54810095B57F /* CWMethodTimeMonitor.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DFB542225B54810095B57F /* CWMethodTimeMonitor.m */; };
 		E8DFB546225C90560095B57F /* CWMethodExecuteInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = E8DFB545225C90560095B57F /* CWMethodExecuteInfo.m */; };
 		E8F26BC2223A3D42004E9464 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E8F26BC1223A3D42004E9464 /* AppDelegate.m */; };
@@ -20,6 +21,8 @@
 
 /* Begin PBXFileReference section */
 		E86BB1072240ECB3006D96C6 /* CWCallHeader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWCallHeader.h; sourceTree = "<group>"; };
+		E872A73C2266FBA10067D95E /* AppMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppMonitor.h; sourceTree = "<group>"; };
+		E872A73D2266FBA10067D95E /* AppMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppMonitor.m; sourceTree = "<group>"; };
 		E8DFB541225B54810095B57F /* CWMethodTimeMonitor.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWMethodTimeMonitor.h; sourceTree = "<group>"; };
 		E8DFB542225B54810095B57F /* CWMethodTimeMonitor.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CWMethodTimeMonitor.m; sourceTree = "<group>"; };
 		E8DFB544225C90560095B57F /* CWMethodExecuteInfo.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CWMethodExecuteInfo.h; sourceTree = "<group>"; };
@@ -49,6 +52,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E872A73B2266FB930067D95E /* AppMonitor */ = {
+			isa = PBXGroup;
+			children = (
+				E872A73C2266FBA10067D95E /* AppMonitor.h */,
+				E872A73D2266FBA10067D95E /* AppMonitor.m */,
+			);
+			path = AppMonitor;
+			sourceTree = "<group>";
+		};
 		E8F26BB4223A3D42004E9464 = {
 			isa = PBXGroup;
 			children = (
@@ -68,6 +80,7 @@
 		E8F26BBF223A3D42004E9464 /* MethodTimeMonitor */ = {
 			isa = PBXGroup;
 			children = (
+				E872A73B2266FB930067D95E /* AppMonitor */,
 				E8F26BD6223A3D7F004E9464 /* CallTrace */,
 				E8F26BC0223A3D42004E9464 /* AppDelegate.h */,
 				E8F26BC1223A3D42004E9464 /* AppDelegate.m */,
@@ -171,6 +184,7 @@
 				E8DFB546225C90560095B57F /* CWMethodExecuteInfo.m in Sources */,
 				E8F26BD0223A3D44004E9464 /* main.m in Sources */,
 				E8F26BEB223BAD6A004E9464 /* CWCallStack.m in Sources */,
+				E872A73E2266FBA10067D95E /* AppMonitor.m in Sources */,
 				E8F26BC2223A3D42004E9464 /* AppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
